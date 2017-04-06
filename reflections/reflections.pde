@@ -1,19 +1,14 @@
 class Line {
-  float x1, y1, x2, y2;
+  PVector p1, p2;
 
-  Line(float x1, float y1, float x2, float y2) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
+  Line(PVector p1, PVector p2) {
+    this.p1 = p1;
+    this.p2 = p2;
   }
-
-  void update() {
-  }
-
+  
   void draw() {
     stroke(0);
-    line(this.x1, this.y1, this.x2, this.y2);
+    line(p1.x, p1.y, p2.x, p2.y);
   }
 }
 
@@ -31,7 +26,6 @@ class P {
   }
   
   void draw() {
-    
   }
 }
 
@@ -45,39 +39,29 @@ void setup() {
   frameRate(60);
   background(0);
   for (int i = 0; i < 10; i++) {
-    lines.add(new Line(random(width), random(height), random(width), random(height)));
+    lines.add(new Line(new PVector(random(width), random(height)),
+                       new PVector(random(width), random(height))));
   }
 }
 
-void ray(Line lastLine, PVector start, PVector dir, float i, int reflections) { 
-  if (reflections > 100) {
-    fill(0);
-    text("refs: " + reflections, 25, 25);
+void ray(Line sourceLine, PVector o, PVector v, int reflections) { 
+  if (reflections > 50) {
     return;
   }
-  float x = start.x;
-  float y = start.y;
-  float vx = dir.x;
-  float vy = dir.y;
 
   float earliest_collision = -1;
   Line line = null;
-  for (int li = 0; li < lines.size(); li++) {
-    Line l = lines.get(li);
-    if (l == lastLine) {
+  for (Line l: lines) {
+    if (l == sourceLine) {
       continue;
     }
-    float dx = l.x2 - l.x1;
-    float dy = l.y2 - l.y1;
-    float denum = (dy - vy/vx * dx);
+    PVector d = PVector.sub(l.p2, l.p1);
+    float denum = (d.y - v.y/v.x * d.x);
     
-    if (denum == 0) {
-      return;
-    }
+    if (denum == 0) return;
     
-    float t = (y - l.y1 + vy/vx * (l.x1 - x)) / denum;
-    // t = (mouseY + vy / vx * (l.x1 - mouseX)) / (dy - vy / vx * dx)
-    float p = (l.x1 + dx * t - x) / vx;
+    float t = (o.y - l.p1.y + v.y/v.x * (l.p1.x - o.x)) / denum;
+    float p = (l.p1.x + d.x * t - o.x) / v.x;
 
     if (p > 0 && t > 0 && t < 1) {
       if (earliest_collision == -1 || p < earliest_collision) {
@@ -88,30 +72,25 @@ void ray(Line lastLine, PVector start, PVector dir, float i, int reflections) {
   }
 
   if (earliest_collision == -1) {
-    fill(0);
-    text("refs: " + reflections, 25, 25);
-    earliest_collision = max(width, height);
+    earliest_collision = sqrt(width * width + height * height);
   } else {
-    PVector newDir = dir.copy();
-    PVector l = new PVector(line.x2 - line.x1, line.y2 - line.y1);
+    PVector newDir = v.copy();
+    PVector l = PVector.sub(line.p2, line.p1);
     l.normalize();
     PVector bounce = PVector.sub(newDir, PVector.mult(l, l.dot(newDir)));
     newDir.sub(bounce);
     newDir.sub(bounce);
     newDir.normalize();
     float offset = 0;
-    ray(line, new PVector(x + vx * (earliest_collision) + newDir.x * offset, y + vy * (earliest_collision)+ newDir.y * offset), newDir, i, reflections + 1);
+    ray(line, new PVector(o.x + v.x * (earliest_collision) + newDir.x * offset, o.y + v.y * (earliest_collision)+ newDir.y * offset), newDir, reflections + 1);
   }
 
   float offset = 0;//min(earliest_collision, noise(abs(i - 0.5) * 1, millis() * 0.001) * 10 + 30);
   stroke(255, 255.0 / reflections);
-  line(x + vx * offset, y + vy * offset, x + vx * (earliest_collision), y + vy * (earliest_collision));
+  line(o.x + v.x * offset, o.y + v.y * offset, o.x + v.x * (earliest_collision), o.y + v.y * (earliest_collision));
 }
 
 void update() {
-  for (Line l : lines) {
-    l.update();
-  }
   float f = 0.5;
   PVector force = new PVector();
   if (keyPressed) {
@@ -145,9 +124,9 @@ void draw() {
     float x = cos(p * 2 * PI + t);//noise(abs(p - 0.5) * 1, t) * 5);
     float y = sin(p * 2 * PI + t);//noise(abs(p - 0.5) * 1, t) * 5);
     for (int li = 0; li < lights.size(); li++) {
-      ray(null, lights.get(li), new PVector(x, y), p, 0);
+      ray(null, lights.get(li), new PVector(x, y), 0);
     }
-    ray(null, player.p, new PVector(x, y), p, 0);
+    ray(null, player.p, new PVector(x, y), 0);
   }
   for (Line l : lines) {
     l.draw();
