@@ -78,16 +78,14 @@ void ray(Line sourceLine, PVector o, PVector v, int reflections) {
     PVector l = PVector.sub(line.p2, line.p1);
     l.normalize();
     PVector bounce = PVector.sub(newDir, PVector.mult(l, l.dot(newDir)));
-    newDir.sub(bounce);
+    bounce.mult(2);
     newDir.sub(bounce);
     newDir.normalize();
-    float offset = 0;
-    ray(line, new PVector(o.x + v.x * (earliest_collision) + newDir.x * offset, o.y + v.y * (earliest_collision)+ newDir.y * offset), newDir, reflections + 1);
+    ray(line, new PVector(o.x + v.x * (earliest_collision), o.y + v.y * (earliest_collision)), newDir, reflections + 1);
   }
 
-  float offset = 0;//min(earliest_collision, noise(abs(i - 0.5) * 1, millis() * 0.001) * 10 + 30);
   stroke(255, 255.0 / reflections);
-  line(o.x + v.x * offset, o.y + v.y * offset, o.x + v.x * (earliest_collision), o.y + v.y * (earliest_collision));
+  line(o.x, o.y, o.x + v.x * (earliest_collision), o.y + v.y * (earliest_collision));
 }
 
 void update() {

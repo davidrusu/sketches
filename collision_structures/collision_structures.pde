@@ -33,7 +33,7 @@ void setup() {
 
 void update() {
   
-  if (random(1) < 1) {
+  for (int i = 0; i < 10; i++) {
     ps.add(new P());
   }
   
@@ -57,22 +57,12 @@ void update() {
     for (int j = i + 1; j < ps.size(); j++) {
       P a = ps.get(i);
       P b = ps.get(j);
-      if (a.p.dist(b.p) < a.r + b.r) {
+      if (a.p.dist(b.p) < (a.r + b.r) * 0.5) {
         PVector av = a.v.copy();
         a.v.add(b.v);
         a.v.div(2);
         b.v.add(av);
         b.v.div(2);
-        
-        
-        //PVector delta = b.p.copy();
-        //delta.sub(a.p);
-        //float d = delta.mag();
-        //delta.normalize();
-        //delta.mult(0.1);
-        //a.v.sub(delta);
-        //b.v.add(delta);
-        
       }
     }
   }
