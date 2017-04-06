@@ -49,7 +49,7 @@ class Peer {
     prevHeartbeat = millis();
     this.nodeStateTimestamp = timestamp;
   }
-  
+
   PVector predictPos() {
     return node.pos;
     //float dt = millis() - prevHeartbeat;
@@ -93,8 +93,8 @@ class Node {
       peers.get(p.source.id).receivedHeartbeat(p.source, 0);
     } else if (peers.size() < 5) {
       peers.put(p.source.id, new Peer(p.source));
-      
-      
+
+
       for (Peer peerOfPeer : p.source.peers.values()) {
         if (peers.containsKey(peerOfPeer.node.id) || peerOfPeer.node.id == id || peers.size() > 3) {
           continue;
@@ -184,7 +184,7 @@ int lastFrameTime = millis();
 void update() {
   float dt = millis() - lastFrameTime;
   lastFrameTime = millis();
-  
+
   for (Packet p : packetsToSend) {
     packets.add(p);
   }
