@@ -119,8 +119,8 @@ void draw() {
   for (int i = 0; i < n; i++) {
     float p = ((float) i) / n;
     float t = millis() * 0.00001;
-    float x = cos(p * 2 * PI + t);//noise(abs(p - 0.5) * 1, t) * 5);
-    float y = sin(p * 2 * PI + t);//noise(abs(p - 0.5) * 1, t) * 5);
+    float x = cos(p * 2 * PI + t);
+    float y = sin(p * 2 * PI + t);
     for (int li = 0; li < lights.size(); li++) {
       ray(null, lights.get(li), new PVector(x, y), 0);
     }
