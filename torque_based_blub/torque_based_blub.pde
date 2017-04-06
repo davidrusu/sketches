@@ -1,6 +1,4 @@
 float air = 0.9;
-float g = 0;
-float noiseScale = 0.01;
 
 class P {
   PVector pos, vel;
@@ -15,13 +13,12 @@ class P {
   }
 
   void update() {
-    vel.y += g;
     pos.add(vel);
     vel.mult(air);
     float f = 1;
     float border = 10;
     float bounce = 0;
-    
+
     if (pos.x < border) {
       vel.x += f;
     }
@@ -66,7 +63,6 @@ class Blob {
 
     for (int i = 0; i < ps.size(); i++) {
       P a = ps.get(i);
-      //for (int j = i + 1; j < ps.size(); j++) {
       int j = (i + 1) % ps.size();
       int jj = (i + 2) % ps.size();
       P b = ps.get(j);
@@ -84,37 +80,26 @@ class Blob {
       PVector torque = new PVector(-bc.y, bc.x);
       torque.normalize();
       torque.mult(torqueMag);
-      //torque.limit(0.1);
       c.vel.add(torque);
 
-      //torque = new PVector(-ab.y, ab.x);
-      //torque.normalize();
-      //torque.mult(-torqueMag);
-      //a.vel.add(torque);
-
       float rad = (1.0 / ps.size()) * 2 * PI;
-      float secant = dist(sin(0) * r, cos(0)*r, sin(rad) * r, cos(rad) * r); 
-      //int nn = (j - i);
+      float secant = dist(sin(0) * r, cos(0)*r, sin(rad) * r, cos(rad) * r);
       float target = secant;
-      float k = 0.5;// * noise(i * 0.01, j * 0.01);/// (nn * nn);
+      float k = 0.5;
       PVector delta = b.pos.copy();
       delta.sub(a.pos);
       float d = delta.mag();
       float f = -(target - d) * k;
       delta.normalize();
       delta.mult(f);
-      //delta.limit(1);
       a.vel.add(delta);
       b.vel.sub(delta);
 
-      //if (i == 2) {
       strokeWeight(1);
       stroke(0, 0, 0);
       float torqueScale = 100;
       torque.limit(0.1);
       line(c.pos.x, c.pos.y, c.pos.x + torque.x * torqueScale, c.pos.y + torque.y * torqueScale);
-      //}
-      //}
     }
 
     for (P p : ps) {
@@ -123,17 +108,6 @@ class Blob {
   }
 
   void draw() {
-    //for (int i = 0; i < ps.size(); i ++) {
-    //  int next_i = (i + 1) % ps.size();
-    //  P p = ps.get(i);
-    //  P np = ps.get(next_i);
-    //  stroke(0);
-    //  strokeWeight(1);
-    //  line(p.pos.x, p.pos.y, np.pos.x, np.pos.y);
-    //}
-    //for (P p : ps) {
-    //  p.draw();
-    //}
   }
 }
 
@@ -206,13 +180,6 @@ void draw() {
     b.draw();
   }
 
-  //for (int x = 0; x < width; x++) {
-  //  for (int y = 0; y < height; y++) {
-  //    stroke(map(noise(x * noiseScale, y * noiseScale), 0, 1, 0, 255));
-  //    point(x, y);
-  //  }
-  //}
-  
-  fill(255,0,0);
+  fill(255, 0, 0);
   text("fps: " + frameRate, 25, 25);
 }

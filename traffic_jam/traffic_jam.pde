@@ -45,18 +45,9 @@ class P {
     noFill();
     float angle = PVector.sub(p, c).heading();
     arc(c.x, c.y, r * 2, r * 2, angle - PI/24 - speed * PI/48, angle);
-    //ellipse(c.x, c.y, r * 2, r * 2);
     
     noStroke();
     fill(255);
-    //ellipse(p.x, p.y, 2, 2);
-    
-    //fill(255, 0, 0);
-    //ellipse(c.x, c.y, 5, 5);
-    
-    //stroke(0, 255, 0);
-    //line(c.x, c.y, p.x, p.y);
-    
   } 
 }
 
