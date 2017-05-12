@@ -1,5 +1,5 @@
 float air = 0.5;
-float mouseR = 25;
+float mouseR = 50;
 class P {
   PVector p, v;
   PVector c;
@@ -94,7 +94,7 @@ void update() {
       continue;
     }
     delta.normalize();
-    delta.mult(-max(0, (d - mouseR)) * 0.1);
+    delta.mult(-max(0, (d - mouseR)) * 1);
     a.v.add(delta);
   }
 }

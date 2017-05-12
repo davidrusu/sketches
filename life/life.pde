@@ -1,10 +1,16 @@
 PVector shift = new PVector();
 float mouseR = 25;
 
+class MarkovProcess {
+  MarkovProcess(int num_states) {
+    this.matrix = new float[num_states][num_states];
+  }
+}
+
 class Packet {
   PVector pos, vel;
   Node source;
-  float r = 4;
+  float r = 2;
   int expires;
 
   Packet(Node source, PVector pos, PVector vel, int expires) {
